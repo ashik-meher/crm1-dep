@@ -27,7 +27,7 @@ SECRET_KEY = 'zdu*sfsluq5hajowwp)u=w8wzzj63&lwywcmei76s42vl75_ic'
 DEBUG = False
 
 # For Heroku hosting 'crm1-lite-live.herokuapp.com'- git repo office dev
-ALLOWED_HOSTS = ['crm1-lite-live.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['crm-fresh.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -123,12 +123,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 # For Heroku
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/images/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
