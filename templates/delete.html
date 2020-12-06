@@ -1,0 +1,47 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container">
+
+    <div class="form-group">
+
+        <div class="card card-body" style="text-align: center; width:50%; margin:auto;">
+
+            <form id="contact" action="{% url 'delete_order' item.id %}" method="post">
+
+                {% csrf_token %}
+
+                <p>Are you sure you want to delete? {{item}}</p>
+
+                <a class="btn btn-sm btn-warning" href="{% url 'dashboard' %}">Cancel</a>
+
+
+
+
+
+
+
+
+                <button name="confirm" type="submit" id="contact-submit" class="btn btn-sm btn-danger"
+                    data-submit="...Sending">Confirm</button>
+
+
+
+
+
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
