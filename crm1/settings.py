@@ -27,7 +27,7 @@ SECRET_KEY = 'zdu*sfsluq5hajowwp)u=w8wzzj63&lwywcmei76s42vl75_ic'
 DEBUG = False
 
 # For Heroku hosting 'crm1-lite-live.herokuapp.com'- git repo office dev
-ALLOWED_HOSTS = ['crm-fresh.herokuapp.com']
+ALLOWED_HOSTS = ['crm1-dep.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -123,7 +123,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIR = [
+STATICFILES_DIRS = [
 
     os.path.join(BASE_DIR, 'static')
+
 ]
+
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
