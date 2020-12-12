@@ -2,7 +2,21 @@ from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
 from django.forms import inlineformset_factory
+from .filters import OrderFilter
 
+# User Creation
+from django.contrib.auth.forms import UserCreationForm
+
+# flash message
+from django.contrib import messages
+
+# authentication
+
+from django.contrib.auth import authenticate, login, logout
+
+# login restriction
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -15,6 +29,61 @@ def home(request):
     return render(request, 'home.html', {})
 
 
+def registerPage(request):
+
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    else:
+
+        form = CreateUserForm()
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request, 'Account Created for ' + user)
+                return redirect('login')
+
+        context = {'form': form}
+
+        return render(request, "register.html", context)
+
+
+def loginPage(request):
+
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    else:
+
+        if request.method == 'POST':
+
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+
+                login(request, user)
+                return redirect('dashboard')
+
+            else:
+
+                messages.info(request, 'Username or Password is incorrect')
+
+    context = {}
+
+    return render(request, "login.html", context)
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+
 def products(request):
 
     products = Product.objects.all()
@@ -22,6 +91,7 @@ def products(request):
     return render(request, 'products.html', {'products': products})
 
 
+@login_required(login_url='login')
 def customer(request, pk):
 
     # that makes avaible the dynamic url to this page associated with customer id
@@ -32,12 +102,17 @@ def customer(request, pk):
 
     orders_count = orders.count()
 
+    myFilter = OrderFilter(request.GET, queryset=orders)
+
+    orders = myFilter.qs
+
     context = {'customer': customer, 'orders': orders,
-               'orders_count': orders_count}
+               'orders_count': orders_count, 'myFilter': myFilter}
 
     return render(request, 'customer.html', context)
 
 
+@login_required(login_url='login')
 def createCustomer(request):
     form = CustomerForm()
 
@@ -52,6 +127,7 @@ def createCustomer(request):
     return render(request, 'customer_form.html', context)
 
 
+@login_required(login_url='login')
 def updateCustomer(request, pk):
 
     customer = Customer.objects.get(id=pk)
@@ -89,6 +165,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
+@login_required(login_url='login')
 def createOrder(request, pk):
     OrderFormSet = inlineformset_factory(
         Customer, Order, fields=('product', 'status'), extra=3)
@@ -111,6 +188,7 @@ def createOrder(request, pk):
     return render(request, 'order_form.html', context)
 
 
+@login_required(login_url='login')
 def updateOrder(request, pk):
 
     order = Order.objects.get(id=pk)
@@ -128,6 +206,7 @@ def updateOrder(request, pk):
     return render(request, 'order_form.html', context)
 
 
+@login_required(login_url='login')
 def deleteOrder(request, pk):
 
     order = Order.objects.get(id=pk)
